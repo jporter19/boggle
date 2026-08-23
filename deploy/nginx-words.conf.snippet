@@ -1,0 +1,15 @@
+# Word Paths static app — include inside the porterfamily.us HTTPS server block,
+# BEFORE the catch-all AI Conversation location /.
+#
+# Deploy files to: /var/www/words/
+#   rsync public/ → /var/www/words/
+
+location = /words {
+    return 302 /words/;
+}
+
+location ^~ /words/ {
+    root /var/www;
+    try_files $uri $uri/ /words/index.html;
+    add_header Cache-Control "public, max-age=60";
+}

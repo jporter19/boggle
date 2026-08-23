@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="paper">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1" />
+  <meta name="description" content="Word Paths — Porter Family Portal" />
+  <meta name="theme-color" content="#f4f1ea" />
+  <title>Word Paths · Porter Family</title>
+  <link rel="stylesheet" href="css/word-paths.css?v=6" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>" />
+</head>
+<body>
+  <div id="app" class="app">
+    <div id="screen-loading" class="screen screen-center">
+      <div class="spinner" aria-hidden="true"></div>
+      <p class="muted">Checking sign-in…</p>
+    </div>
+
+    <div id="screen-denied" class="screen screen-center" hidden>
+      <div class="panel panel-narrow">
+        <h1>Access not granted</h1>
+        <p class="muted">Your account does not have access to Word Paths yet. Ask a family admin to grant the app in Portal Admin.</p>
+        <a class="btn btn-primary" href="/">Back to portal</a>
+      </div>
+    </div>
+
+    <div id="screen-menu" class="screen" hidden>
+      <header class="topbar">
+        <a class="btn btn-ghost btn-sm" href="/" title="Portal home">← Portal</a>
+        <div class="topbar-center">
+          <span class="brand">Word Paths</span>
+        </div>
+        <div class="topbar-end">
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm btn-settings"
+            id="btn-settings-menu"
+            data-action="open-settings"
+            title="Settings"
+            aria-label="Open settings"
+          >
+            <span class="settings-glyph" aria-hidden="true">⚙</span>
+            <span class="settings-text">Settings</span>
+          </button>
+          <div class="player" id="menu-player" aria-label="Signed-in player"></div>
+        </div>
+      </header>
+
+      <main class="menu-main">
+        <div class="menu-hero">
+          <h1>Choose a level</h1>
+          <p class="muted">
+            Drag through adjacent letters (including diagonals) to find words.
+            Hit the point target and letter-length goals to clear the board.
+            Tiles show Scrabble-style values; special tiles (Qu, Th, ING, ER) are worth a bonus.
+          </p>
+        </div>
+
+        <div id="resume-banner" class="resume-banner" hidden>
+          <div>
+            <strong>Unfinished game</strong>
+            <span class="muted" id="resume-meta"></span>
+          </div>
+          <div class="resume-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="btn-resume">Resume</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-discard">Discard</button>
+          </div>
+        </div>
+
+        <div class="level-grid" id="level-grid" role="list"></div>
+
+        <section class="history-section" id="history-section" hidden>
+          <h2 class="section-label">Recent scores</h2>
+          <ul class="history-list" id="history-list"></ul>
+        </section>
+      </main>
+    </div>
+
+    <div id="screen-play" class="screen screen-play" hidden>
+      <header class="topbar topbar-play">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-to-menu" title="Back to levels">← Levels</button>
+        <div class="topbar-center stats">
+          <span class="badge" id="play-level">Easy</span>
+          <span class="stat" title="Elapsed time">
+            <span class="stat-label">Time</span>
+            <span class="stat-value mono" id="clock">0:00</span>
+          </span>
+          <span class="stat" title="Word points">
+            <span class="stat-label">Score</span>
+            <span class="stat-value mono" id="live-score">0</span>
+          </span>
+          <span class="stat" title="Words found">
+            <span class="stat-label">Found</span>
+            <span class="stat-value mono" id="found-count">0</span>
+          </span>
+          <span class="stat" title="Total words in this puzzle">
+            <span class="stat-label">In puzzle</span>
+            <span class="stat-value mono" id="total-words">—</span>
+          </span>
+        </div>
+        <div class="topbar-end">
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm btn-settings"
+            id="btn-settings-play"
+            data-action="open-settings"
+            title="Settings"
+            aria-label="Open settings"
+          >
+            <span class="settings-glyph" aria-hidden="true">⚙</span>
+          </button>
+          <div class="player play-player" id="play-player"></div>
+        </div>
+      </header>
+
+      <main class="play-main">
+        <div class="path-preview" id="path-preview" aria-live="polite">
+          <span class="path-word" id="path-word"></span>
+          <span class="path-hint muted" id="path-hint">Drag letters to form a word</span>
+        </div>
+
+        <div class="board-column">
+          <div class="toolbar board-toolbar" role="toolbar" aria-label="Board actions">
+            <button type="button" class="btn btn-ghost" id="btn-new" title="New board">New</button>
+            <button type="button" class="btn btn-ghost" id="btn-hint" title="Hint (−15)" hidden>Hint</button>
+          </div>
+          <div class="board-wrap" id="board-wrap">
+            <div id="board" class="board" tabindex="0"></div>
+          </div>
+        </div>
+
+        <aside class="side-panel" aria-label="Goals and found words">
+          <section class="goals-panel">
+            <h2 class="section-label">Goals</h2>
+            <ul class="goals-list" id="goals-list"></ul>
+          </section>
+
+          <section class="found-panel">
+            <h2 class="section-label">Found <span class="muted" id="found-total"></span></h2>
+            <ul class="found-list" id="found-list"></ul>
+          </section>
+        </aside>
+      </main>
+    </div>
+  </div>
+
+  <div id="settings-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <h2 id="settings-title">Settings</h2>
+        <button type="button" class="btn btn-ghost btn-sm btn-icon" id="btn-settings-close" data-action="close-settings" aria-label="Close settings">✕</button>
+      </div>
+
+      <section class="settings-section">
+        <h3 class="section-label">Color scheme</h3>
+        <div class="theme-grid" id="theme-grid" role="listbox" aria-label="Color schemes"></div>
+      </section>
+
+      <section class="settings-section">
+        <h3 class="section-label">Gameplay</h3>
+        <label class="toggle-row">
+          <span>
+            <strong>Hints</strong>
+            <span class="muted toggle-desc">Show a Hint button (flashes tiles of an unfound word in order; each use costs 15 points)</span>
+          </span>
+          <input type="checkbox" id="setting-hints" />
+        </label>
+      </section>
+
+      <section class="settings-section">
+        <h3 class="section-label">Data</h3>
+        <p class="muted settings-copy">Clears your recent score history on this device. Does not affect an in-progress game.</p>
+        <button type="button" class="btn btn-danger" id="btn-reset-scores">Reset scores</button>
+        <p class="muted settings-status" id="settings-status" hidden></p>
+      </section>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary" id="btn-settings-done" data-action="close-settings">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="win-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="win-title">
+    <div class="modal-card">
+      <h2 id="win-title">Board cleared!</h2>
+      <div class="win-stats">
+        <div class="win-stat">
+          <span class="stat-label">Time</span>
+          <span class="stat-value mono" id="win-time">0:00</span>
+        </div>
+        <div class="win-stat">
+          <span class="stat-label">Words</span>
+          <span class="stat-value mono" id="win-words">0</span>
+        </div>
+        <div class="win-stat win-score">
+          <span class="stat-label">Score</span>
+          <span class="stat-value mono" id="win-score">0</span>
+        </div>
+      </div>
+      <p class="win-breakdown muted" id="win-breakdown"></p>
+      <p class="muted" id="win-hints" hidden></p>
+      <p class="muted" id="win-longest"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary" id="btn-win-continue">Keep finding</button>
+        <button type="button" class="btn btn-ghost" id="btn-win-again">New board</button>
+        <button type="button" class="btn btn-ghost" id="btn-win-menu">Levels</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js?v=6"></script>
+</body>
+</html>

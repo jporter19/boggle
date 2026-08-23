@@ -1,0 +1,11 @@
+.DS_Store
+*.log
+.env
+.venv/
+__pycache__/
+*.pyc
+.idea/
+.vscode/
+*.png
+_selftest.html
+.firefox-selftest/
