@@ -1098,24 +1098,48 @@ button, a.btn {
   font-size: 0.88rem;
 }
 
-/* Mobile: stack board above goals */
+/* Mobile: stack board above goals; board uses leftover space, nearly full width */
 @media (max-width: 720px) {
   .play-main {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
     gap: 0.55rem;
   }
 
   .path-preview { grid-column: 1; }
 
-  .board-toolbar,
+  .board-column {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .board-wrap {
+    container-type: size;
+    width: 100%;
+  }
+
+  .board-toolbar {
+    width: min(100%, 96vw);
+  }
+
   .board,
   .word-grid {
-    width: min(100%, 72vw, 380px);
+    width: min(100%, 96vw, calc(100dvh - max(26vh, 12.5rem) - 9.5rem));
+    max-width: min(100%, 96vw);
+    max-height: 100%;
+    aspect-ratio: 1;
+  }
+
+  @supports (width: min(100cqi, 100cqh)) {
+    .board,
+    .word-grid {
+      width: min(100cqi, 100cqh);
+    }
   }
 
   .side-panel {
-    max-height: 38vh;
+    max-height: max(26vh, 12.5rem);
+    overflow-y: auto;
   }
 
   .topbar-play .player,

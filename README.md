@@ -6,7 +6,7 @@ Wordament-style letter grid for [porterfamily.us](https://porterfamily.us): drag
 
 ## Features
 
-- **Portal identity** — no local login; uses `GET /api/portal/auth/me` and requires grant `word-paths`
+- **Portal identity** — hosted portal-sdk (`/portal-assets/sdk/portal-app.js`); grant `word-paths`. Do not copy `auth.js`.
 - **Levels** — Easy, Medium, Hard, Expert from a generated board bank with calibrated goals
 - **Goals** — every board has a **points target** and a **letter-length goal** (3–10); optional word-count and special-tile goals rotate by board; harder levels demand more
 - **Scoring** — Scrabble-style tile values on each piece; multi-letter tiles **Qu (15)**, **Th (12)**, **ING (18)**, **ER (8)**; length multiplier; time vs level average on clear
@@ -44,7 +44,7 @@ python3 -m http.server 8092 --directory public
 
    Syncs `public/` → `/var/www/words` on the Lightsail host.
 
-2. **Nginx** — portal config includes `/words/` (see `deploy/nginx-words.conf.snippet` and `porter-family-portal/deploy/nginx-portal.conf`):
+2. **Nginx** — portal config includes `/words/` (`porter-family-portal/deploy/nginx-portal.conf`):
 
    ```bash
    cd /home/john/code/porter-family-portal && ./scripts/apply_nginx.sh
@@ -95,7 +95,6 @@ scripts/
   deploy_lightsail.sh
   smoke_test.py
 deploy/
-  nginx-words.conf.snippet
 ```
 
 ## Related repos

@@ -6,10 +6,13 @@
   <meta name="description" content="Word Paths — Porter Family Portal" />
   <meta name="theme-color" content="#f4f1ea" />
   <title>Word Paths · Porter Family</title>
-  <link rel="stylesheet" href="css/word-paths.css?v=6" />
+  <link rel="stylesheet" href="/portal-assets/sdk/portal-app.css" />
+
+  <link rel="stylesheet" href="css/word-paths.css?v=7" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>" />
 </head>
 <body>
+  <div id="portal-chrome"></div>
   <div id="app" class="app">
     <div id="screen-loading" class="screen screen-center">
       <div class="spinner" aria-hidden="true"></div>
@@ -26,7 +29,6 @@
 
     <div id="screen-menu" class="screen" hidden>
       <header class="topbar">
-        <a class="btn btn-ghost btn-sm" href="/" title="Portal home">← Portal</a>
         <div class="topbar-center">
           <span class="brand">Word Paths</span>
         </div>

@@ -1,0 +1,8 @@
+{
+  "id": "word-paths",
+  "name": "Word Paths",
+  "description": "Find words on a letter grid \u2014 goals, longer-word challenges, four difficulty levels.",
+  "entry_url": "/words/",
+  "icon": "\ud83d\udd24",
+  "accent": "#7c3aed"
+}

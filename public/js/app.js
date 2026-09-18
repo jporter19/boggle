@@ -3,7 +3,6 @@
  */
 
 import { ASSET_V } from './version.js?v=6';
-import { resolveUser, redirectToLogin, displayName } from './auth.js?v=6';
 import { mountBoard } from './board.js?v=6';
 import { loadDictionary } from './dictionary.js?v=6';
 import {
@@ -140,15 +139,22 @@ const THEME_SWATCH = {
 
 async function main() {
   void ASSET_V;
-  const auth = await resolveUser();
-  if (!auth.user && !auth.denied) {
-    redirectToLogin();
+  let mountPortalApp;
+  let displayName;
+  try {
+    ({ mountPortalApp, displayName } = await import('/portal-assets/sdk/portal-app.js'));
+  } catch {
+    window.location.replace('/admin/login?next=' + encodeURIComponent('/words/'));
     return;
   }
-  if (auth.denied) {
-    showScreen('denied');
-    return;
-  }
+  const auth = await mountPortalApp({
+    appId: 'word-paths',
+    homePath: '/words/',
+    onDenied() {
+      showScreen('denied');
+    },
+  });
+  if (!auth.user || auth.denied) return;
   user = auth.user;
 
   settings = loadSettings(user.user_id);
